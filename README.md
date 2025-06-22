@@ -1,1 +1,1 @@
-Firebase ADK Hello World
+ADK Hello World
