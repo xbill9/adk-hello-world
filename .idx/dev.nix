@@ -5,7 +5,8 @@
   channel = "stable-24.05"; # or "unstable"
   # Use https://search.nixos.org/packages to find packages
   packages = [ 
-        pkgs.python313
+        pkgs.python312
+        pkgs.python312Packages.pip       
   ];
   idx = {
     # Search for the extensions you want on https://open-vsx.org/ and use "publisher.id"
