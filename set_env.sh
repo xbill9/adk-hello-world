@@ -86,7 +86,7 @@ export SERVICE_NAME="hello-world-agent-service"
 # Set an application name (optional)
 export APP_NAME="hello-world-agent-app"
 
-export AGENT_PATH="/home/user/adk-hello-world/src/agents/adk_hello_world"
+export AGENT_PATH="$HOME/adk-hello-world/src/agents/adk_hello_world"
 
 echo "Exported AGENT_PATH=$AGENT_PATH"
 
