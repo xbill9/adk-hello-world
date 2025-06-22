@@ -1,4 +1,4 @@
-. ~/adk-hello-world/set_env.sh
+. $HOME/adk-hello-world/set_env.sh
 
 cd src/agents
 
