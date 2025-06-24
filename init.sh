@@ -59,6 +59,8 @@ gcloud config set project $(cat ~/project_id.txt)
 
 # gcloud auth application-default login
 
+export PATH=$PATH:$HOME/.local/bin
+
 echo "--- Setup complete ---"
 exit 0
 
