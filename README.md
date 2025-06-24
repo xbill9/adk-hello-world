@@ -1,5 +1,7 @@
 ADK Hello World
 
+ADK Starter app for deployment across multiple environemnts
+
 Setup Scripts:
 
 init.sh         Inital setup - save project ID and Gemini Key for convenience
@@ -13,5 +15,5 @@ run.sh          Command Line interaction with Agent
 web.sh          Web Based UI 
 webvm.sh        Web Based UI with all interfaces open
 
-cloudrun.sh     Build out Cloud Run deployment of agent
+cloudrun.sh     Build out Cloud Run deployment of Agent
 api_server.sh   Run Agent in API mode
