@@ -36,11 +36,24 @@ if [ ! -f "$PROJECT_FILE_PATH" ]; then
   return 1 # Return 1 as we are sourcing
 fi
 
-GEMINI_FILE_PATH=$(eval echo $GEMINI_KEY) # Expand potential ~
-if [ ! -f "$GEMINI_FILE_PATH" ]; then
-  echo "Error: Project file not found at $GEMINI_FILE_PATH"
-  echo "Please create $GEMINI_FILE_PATH containing your Gemini Key."
-  return 1 # Return 1 as we are sourcing
+# --- Gemini Key vs Vertex AI Configuration ---
+read -p "Are you using a Gemini API Key? (y/N): " USE_GEMINI_KEY
+USE_GEMINI_KEY=${USE_GEMINI_KEY:-n}
+
+USE_VERTEX_AI="TRUE"
+
+if [[ "$USE_GEMINI_KEY" =~ ^[Yy]$ ]]; then
+  echo "Configuring for Gemini API Key..."
+  GEMINI_FILE_PATH=$(eval echo $GEMINI_KEY) # Expand potential ~
+  if [ ! -f "$GEMINI_FILE_PATH" ]; then
+    echo "Error: Gemini Key file not found at $GEMINI_FILE_PATH"
+    echo "Please create $GEMINI_FILE_PATH containing your Gemini Key."
+    return 1 # Return 1 as we are sourcing
+  fi
+  export GEMINI_API_KEY=$(cat "$GEMINI_FILE_PATH")
+  USE_VERTEX_AI="FALSE"
+else
+  echo "Configuring for Vertex AI..."
 fi
 
 
@@ -65,7 +78,7 @@ export GOOGLE_CLOUD_PROJECT="$PROJECT_ID"
 echo "Exported GOOGLE_CLOUD_PROJECT=$GOOGLE_CLOUD_PROJECT"
 
 # Export GOOGLE_GENAI_USE_VERTEXAI
-export GOOGLE_GENAI_USE_VERTEXAI="TRUE"
+export GOOGLE_GENAI_USE_VERTEXAI="$USE_VERTEX_AI"
 echo "Exported GOOGLE_GENAI_USE_VERTEXAI=$GOOGLE_GENAI_USE_VERTEXAI"
 
 #  Export GOOGLE_CLOUD_LOCATION
