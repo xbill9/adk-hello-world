@@ -1,6 +1,6 @@
 . $HOME/adk-hello-world/set_env.sh
 
-echo Running ADK from GCE VM
+echo Running ADK from Cloud VM
 cd src/agents
 
 echo `pwd`
