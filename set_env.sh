@@ -2,11 +2,11 @@
 
 # This script sets various Google Cloud related environment variables.
 # It must be SOURCED to make the variables available in your current shell.
-# Example: source ./set_gcp_env.sh
+# Example: source ./set_env.sh
 
 # --- Configuration ---
-PROJECT_FILE="~/project_id.txt"
-GEMINI_KEY="~/gemini.key"
+PROJECT_FILE="$HOME/project_id.txt"
+GEMINI_KEY="$HOME/gemini.key"
 GOOGLE_CLOUD_LOCATION="us-central1"
 # ---------------------
 
@@ -29,7 +29,7 @@ fi
 
 
 # 1. Check if project file exists
-PROJECT_FILE_PATH=$(eval echo $PROJECT_FILE) # Expand potential ~
+PROJECT_FILE_PATH="$PROJECT_FILE"
 if [ ! -f "$PROJECT_FILE_PATH" ]; then
   echo "Error: Project file not found at $PROJECT_FILE_PATH"
   echo "Please create $PROJECT_FILE_PATH containing your Google Cloud project ID."
@@ -37,20 +37,28 @@ if [ ! -f "$PROJECT_FILE_PATH" ]; then
 fi
 
 # --- Gemini Key vs Vertex AI Configuration ---
-read -p "Are you using a Gemini API Key? (y/N): " USE_GEMINI_KEY
+if [ -z "$USE_GEMINI_KEY" ]; then
+  if [ -t 0 ]; then
+    read -p "Are you using a Gemini API Key? (y/N): " USE_GEMINI_KEY
+  else
+    USE_GEMINI_KEY="n"
+  fi
+fi
 USE_GEMINI_KEY=${USE_GEMINI_KEY:-n}
 
 USE_VERTEX_AI="TRUE"
 
 if [[ "$USE_GEMINI_KEY" =~ ^[Yy]$ ]]; then
   echo "Configuring for Gemini API Key..."
-  GEMINI_FILE_PATH=$(eval echo $GEMINI_KEY) # Expand potential ~
+  GEMINI_FILE_PATH="$GEMINI_KEY"
   if [ ! -f "$GEMINI_FILE_PATH" ]; then
     echo "Error: Gemini Key file not found at $GEMINI_FILE_PATH"
     echo "Please create $GEMINI_FILE_PATH containing your Gemini Key."
     return 1 # Return 1 as we are sourcing
   fi
-  export GEMINI_API_KEY=$(cat "$GEMINI_FILE_PATH")
+  export GOOGLE_API_KEY
+  GOOGLE_API_KEY="$(cat "$GEMINI_FILE_PATH")"
+  export GEMINI_API_KEY="$GOOGLE_API_KEY"
   USE_VERTEX_AI="FALSE"
 else
   echo "Configuring for Vertex AI..."
@@ -99,9 +107,9 @@ export SERVICE_NAME="hello-world-agent-service"
 # Set an application name (optional)
 export APP_NAME="hello-world-agent-app"
 
-export AGENT_PATH="$HOME/adk-hello-world/src/agents/adk_hello_world"
+PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+export AGENT_PATH="$PROJECT_ROOT/src/agents/adk_hello_world"
 
 echo "Exported AGENT_PATH=$AGENT_PATH"
 
 echo "--- Environment setup complete ---"
-

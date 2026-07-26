@@ -1,7 +1,8 @@
-. $HOME/adk-hello-world/set_env.sh
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+. "$SCRIPT_DIR/set_env.sh"
 
 echo setting API Server Mode
-cd src/agents/adk_hello_world
+cd "$SCRIPT_DIR/src/agents" || exit 1
 
 echo `pwd`
 echo adk api_server .

@@ -31,7 +31,8 @@ KEY_FILE="$HOME/gemini.key"
 
 echo "--- Setting Google Cloud Gemini Key File ---"
 # Prompt the user for input
-read -p "Please enter your Google Cloud Gemini Key: " user_gemini_key
+read -r -s -p "Please enter your Gemini API key: " user_gemini_key
+echo
 
 # Check if the user entered anything
 if [[ -z "$user_gemini_key" ]]; then
@@ -39,23 +40,20 @@ if [[ -z "$user_gemini_key" ]]; then
   exit 1 # Exit the script with an error code
 fi
 
-echo "You entered: $user_gemini_key"
-
-# Write the project ID to the file
-# Using > will overwrite the file if it exists
-echo "$user_gemini_key" > "$KEY_FILE"
+# Store the key without printing it or making it readable by other users.
+(umask 077 && printf '%s\n' "$user_gemini_key" > "$KEY_FILE")
 
 # Check if the write operation was successful
 if [[ $? -eq 0 ]]; then
   echo "Successfully saved Gemini Key."
 else
-  echo "Error: Failed saving your project ID:  $user_gemini_key."
+  echo "Error: Failed to save the Gemini API key."
   exit 1 
 fi
 
-export GOOGLE_API_KEY=$user_gemini_key
+export GOOGLE_API_KEY="$user_gemini_key"
 
-gcloud config set project $(cat ~/project_id.txt) 
+gcloud config set project "$(cat "$PROJECT_FILE")"
 
 # gcloud auth application-default login
 
@@ -63,4 +61,3 @@ export PATH=$PATH:$HOME/.local/bin
 
 echo "--- Setup complete ---"
 exit 0
-
